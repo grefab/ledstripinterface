@@ -10,14 +10,31 @@ void setup() {
   Serial.print("READY\n");
   LEDS.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   LEDS.setBrightness(32);
-  initLeds();
+  initLedsWhite();
+  FastLED.show();
+  delay(100);
+  initLedsGreen();
+  FastLED.show();
+  delay(100);
+  initLedsWhite();
+  FastLED.show();
+  delay(100);
+  initLedsGreen();
+  FastLED.show();
+  delay(100);
+  initLedsWhite();
   FastLED.show();
 }
 
-void initLeds() {
+void initLedsWhite() {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB::White;
     leds[i].fadeLightBy(220);
+  }
+}
+void initLedsGreen() {
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB::Green;
   }
 }
 
