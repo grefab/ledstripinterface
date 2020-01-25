@@ -3,7 +3,6 @@ package arduino
 import (
 	"github.com/tarm/serial"
 	"log"
-	"strings"
 	"time"
 )
 
@@ -24,45 +23,6 @@ func EstablishConnection(comPort string) error {
 		return err
 	}
 	connection = conn
-
-	eval := func(cmd string) {
-		switch cmd {
-		case "READY":
-			// log.Println("arduino signals ready")
-		case "FLUSH":
-			// log.Println("flushed")
-		default:
-			log.Printf("unknown arduino message: %v", cmd)
-		}
-	}
-	listenToSerial := func() {
-		var received string
-		for {
-			buf := make([]byte, 128)
-			n, err := conn.Read(buf)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-			received += string(buf[:n])
-			// log.Printf("received: %v\n", received)
-			splits := strings.Split(received, "\n")
-			// log.Printf("splits: %v\n", splits)
-
-			// When we split and no separator is present, we get an
-			// array of size 1 containing the source string.
-			// When we split and an a separator is present at the end,
-			// we get an array with 2 (or more) elements, with
-			// the last element is empty. If the last element is not
-			// empty, it means that command is not completely received yet.
-			for len(splits) > 1 {
-				eval(splits[0])
-				splits = splits[1:]
-			}
-			received = splits[0]
-		}
-	}
-	go listenToSerial()
 	return nil
 }
 
