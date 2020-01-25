@@ -20,7 +20,7 @@ func TestArduino(t *testing.T) {
 	var i uint8 = 0
 	for {
 		startTime := time.Now()
-		SendStrip(makeStrip1(num, i))
+		SendStrip(MakeStrip(num, i))
 		i = (i + 1) % num
 		duration := time.Now().Sub(startTime)
 
@@ -31,21 +31,4 @@ func TestArduino(t *testing.T) {
 			time.Sleep(pause)
 		}
 	}
-}
-
-func makeStrip1(num int, highlight uint8) (strip []Color) {
-	for i := 0; i < num; i++ {
-		strip = append(strip, Color{
-			R: highlight * 3,
-			G: highlight * 3,
-			B: highlight * 3,
-		})
-	}
-
-	strip[highlight] = Color{
-		R: 255,
-		G: 255,
-		B: 255,
-	}
-	return strip
 }

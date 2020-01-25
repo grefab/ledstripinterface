@@ -64,3 +64,20 @@ func write(data []byte) {
 		written += n
 	}
 }
+
+func MakeStrip(num int, highlight uint8) (strip []Color) {
+	for i := 0; i < num; i++ {
+		strip = append(strip, Color{
+			R: highlight * 3,
+			G: highlight * 3,
+			B: highlight * 3,
+		})
+	}
+
+	strip[highlight] = Color{
+		R: 255,
+		G: 255,
+		B: 255,
+	}
+	return strip
+}
