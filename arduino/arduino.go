@@ -25,12 +25,10 @@ func EstablishConnection(comPort string) error {
 	}
 	connection = conn
 
-	done := make(chan bool)
 	eval := func(cmd string) {
 		switch cmd {
 		case "READY":
-			log.Println("arduino signals ready")
-			done <- true
+			// log.Println("arduino signals ready")
 		case "FLUSH":
 			// log.Println("flushed")
 		default:
@@ -65,7 +63,6 @@ func EstablishConnection(comPort string) error {
 		}
 	}
 	go listenToSerial()
-	<-done
 	return nil
 }
 

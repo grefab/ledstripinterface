@@ -6,5 +6,4 @@ import (
 
 func main() {
 	log.SetFlags(log.LUTC | log.Ldate | log.Ltime | log.Lmicroseconds)
-
 }

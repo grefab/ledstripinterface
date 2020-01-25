@@ -54,6 +54,7 @@ void handleByte(uint8_t b) {
   if (isSequenceComplete(b)) {
     FastLED.show();
     idx = 0;
+    dataPtr = 0;
     Serial.print("FLUSH\n");
     return;
   }
