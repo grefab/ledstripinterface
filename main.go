@@ -61,34 +61,37 @@ type Conveyor struct {
 }
 
 func (c *Conveyor) fill() {
-	c.Vials = append(c.Vials,
-		Vial{
-			Color: pb.Color{
-				R: 255,
-				G: 0,
-				B: 0,
-			}})
-	c.Vials = append(c.Vials,
-		Vial{
-			Color: pb.Color{
-				R: 255,
-				G: 255,
-				B: 255,
-			}})
-	c.Vials = append(c.Vials,
-		Vial{
-			Color: pb.Color{
-				R: 255,
-				G: 255,
-				B: 255,
-			}})
-	c.Vials = append(c.Vials,
-		Vial{
-			Color: pb.Color{
-				R: 255,
-				G: 255,
-				B: 255,
-			}})
+	pattern := "bg.gb"
+
+	for i := 0; i < 40; i++ {
+		v := pattern[i%len(pattern)]
+		switch v {
+		case '.':
+			c.Vials = append(c.Vials,
+				Vial{
+					Color: pb.Color{
+						R: 16,
+						G: 16,
+						B: 16,
+					}})
+		case 'b':
+			c.Vials = append(c.Vials,
+				Vial{
+					Color: pb.Color{
+						R: 255,
+						G: 0,
+						B: 0,
+					}})
+		default:
+			c.Vials = append(c.Vials,
+				Vial{
+					Color: pb.Color{
+						R: 255,
+						G: 255,
+						B: 255,
+					}})
+		}
+	}
 }
 func updateState(colors chan []*pb.Color) {
 	future := Conveyor{}
@@ -106,8 +109,10 @@ func updateState(colors chan []*pb.Color) {
 				color := *e
 				bufStrip = append(bufStrip, &color)
 			}
-			bufStrip[4] = &pb.Color{R: 255, G: 255, B: 0}
-			bufStrip[7] = &pb.Color{R: 255, G: 255, B: 0}
+
+			var intensity uint32 = 16
+			bufStrip[4] = &pb.Color{R: intensity, G: intensity, B: 0}
+			bufStrip[7] = &pb.Color{R: intensity, G: intensity, B: 0}
 			colors <- bufStrip
 		}
 
@@ -119,7 +124,7 @@ func updateState(colors chan []*pb.Color) {
 		}
 		sendStrip()
 
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Millisecond * 1500)
 		if len(future.Vials) == 0 {
 			future.fill()
 		}
