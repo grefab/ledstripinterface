@@ -44,7 +44,9 @@ uint8_t history[FRAME_SIZE] = {255, 255, 255};
 int historyPtr = 0;
 bool isSequenceComplete(uint8_t b) {
   history[historyPtr++] = b;
-  historyPtr %= FRAME_SIZE;
+  if (historyPtr >= FRAME_SIZE) {
+    historyPtr = 0;
+  }
   return history[0] == 0 && history[1] == 0 && history[2] == 0;
 }
 
@@ -56,7 +58,7 @@ void handleByte(uint8_t b) {
   if (dataPtr == FRAME_SIZE) {
     // frame complete
     if (idx < NUM_LEDS) {
-      leds[idx++ % NUM_LEDS] = CRGB(data[0], data[1], data[2]);
+      leds[idx++] = CRGB(data[0], data[1], data[2]);
     }
     dataPtr = 0;
   }
