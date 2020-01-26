@@ -32,6 +32,6 @@ func RunServer(ip net.IP, port int, comPort string) {
 }
 
 func (s *server) ShowFrame(_ context.Context, frame *pb.Frame) (*empty.Empty, error) {
-	arduino.SendStrip(frame.Frames)
+	arduino.SendStrip(frame.Pixels)
 	return &empty.Empty{}, nil
 }

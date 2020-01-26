@@ -9,7 +9,7 @@ service Display {
 }
 
 message Frame {
-    repeated Color frames = 1;
+    repeated Color pixels = 1;
 }
 
 message Color {
