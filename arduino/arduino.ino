@@ -1,6 +1,6 @@
 #include <FastLED.h>
 
-#define NUM_LEDS 16
+#define NUM_LEDS 90
 #define DATA_PIN 5
 
 CRGB leds[NUM_LEDS];
@@ -72,14 +72,13 @@ void handleByte(uint8_t b) {
     FastLED.show();
     idx = 0;
     dataPtr = 0;
-    Serial.print("FLUSH\n");
     return;
   }
 
 }
 
 void loop() {
-  if (Serial.available() > 0) {
+  while (Serial.available() > 0) {
     int incomingByte = Serial.read();
     handleByte(incomingByte);
   }
