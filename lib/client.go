@@ -21,14 +21,11 @@ func NewRemoteDisplay(serverAddr string) *remoteDisplay {
 		panic(err)
 	}
 	storageClient := pb.NewDisplayClient(conn)
-
-	return &remoteDisplay{
-		display: storageClient,
-	}
+	return &remoteDisplay{display: storageClient}
 }
 
 func (c *remoteDisplay) ShowFrame(frame *pb.Frame) (err error) {
-	ctx, _ := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), time.Millisecond*500)
 	_, err = c.display.ShowFrame(ctx, frame)
 	return err
 }

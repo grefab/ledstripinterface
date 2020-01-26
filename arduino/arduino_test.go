@@ -9,7 +9,8 @@ import (
 func TestArduino(t *testing.T) {
 	// init and wait for response
 	comPort := "COM3"
-	err := EstablishConnection(comPort)
+	controller := Controller{}
+	err := controller.EstablishConnection(comPort)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -17,10 +18,10 @@ func TestArduino(t *testing.T) {
 	// display something fancy with stable fps
 	const frameDuration time.Duration = time.Second / 10
 	const num = 16
-	var i uint8 = 0
+	var i uint32 = 0
 	for {
 		startTime := time.Now()
-		SendStrip(MakeStrip(num, i))
+		controller.SendStrip(MakeStrip(num, i))
 		i = (i + 1) % num
 		duration := time.Now().Sub(startTime)
 

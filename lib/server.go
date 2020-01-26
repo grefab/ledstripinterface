@@ -9,17 +9,19 @@ import (
 	"net"
 )
 
-type server struct {
+type displayServer struct {
+	controller arduino.Controller
 }
 
 func RunServer(ip net.IP, port int, comPort string) {
-	err := arduino.EstablishConnection(comPort)
+	d := displayServer{}
+	err := d.controller.EstablishConnection(comPort)
 	if err != nil {
 		panic(err)
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterDisplayServer(s, &server{})
+	pb.RegisterDisplayServer(s, &d)
 
 	lis, err := net.ListenTCP("tcp", &net.TCPAddr{IP: ip, Port: port})
 	if err != nil {
@@ -31,7 +33,7 @@ func RunServer(ip net.IP, port int, comPort string) {
 	}
 }
 
-func (s *server) ShowFrame(_ context.Context, frame *pb.Frame) (*empty.Empty, error) {
-	arduino.SendStrip(frame.Pixels)
+func (d *displayServer) ShowFrame(_ context.Context, frame *pb.Frame) (*empty.Empty, error) {
+	d.controller.SendStrip(frame.Pixels)
 	return &empty.Empty{}, nil
 }

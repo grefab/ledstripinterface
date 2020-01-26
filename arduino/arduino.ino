@@ -7,8 +7,7 @@
 CRGB leds[NUM_LEDS];
 
 void setup() {
-  Serial.begin(57600);
-  Serial.print("READY\n");
+  Serial.begin(115200);
   LEDS.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   LEDS.setBrightness(32);
   initLedsWhite();
@@ -67,7 +66,7 @@ void handleByte(uint8_t b) {
     FastLED.show();
     idx = 0;
     dataPtr = 0;
-    return;
+    Serial.print("OK\n");
   }
 }
 
