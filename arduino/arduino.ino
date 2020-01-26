@@ -2,6 +2,7 @@
 
 #define NUM_LEDS 90
 #define DATA_PIN 5
+#define FRAME_SIZE 3
 
 CRGB leds[NUM_LEDS];
 
@@ -38,29 +39,21 @@ void initLedsGreen() {
   }
 }
 
-const int frameSize = 3;
-
 // a sequence is complete, if we received frameSize 0s.
+uint8_t history[FRAME_SIZE] = {255, 255, 255};
+int historyPtr = 0;
 bool isSequenceComplete(uint8_t b) {
-  static uint8_t history[frameSize] = {255, 255, 255};
-  static int historyPtr = 0;
-
   history[historyPtr++] = b;
-  historyPtr %= frameSize;
-  int sum = 0;
-  for (int i = 0; i < frameSize; ++i) {
-    sum += history[i];
-  }
-  return sum == 0;
+  historyPtr %= FRAME_SIZE;
+  return history[0] == 0 && history[1] == 0 && history[2] == 0;
 }
 
+int idx = 0;
+uint8_t data[FRAME_SIZE];
+int dataPtr = 0;
 void handleByte(uint8_t b) {
-  static int idx = 0;
-
-  static uint8_t data[frameSize];
-  static int dataPtr = 0;
   data[dataPtr++] = b;
-  if (dataPtr == frameSize) {
+  if (dataPtr == FRAME_SIZE) {
     // frame complete
     if (idx < NUM_LEDS) {
       leds[idx++ % NUM_LEDS] = CRGB(data[0], data[1], data[2]);
@@ -74,7 +67,6 @@ void handleByte(uint8_t b) {
     dataPtr = 0;
     return;
   }
-
 }
 
 void loop() {
