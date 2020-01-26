@@ -62,7 +62,7 @@ type Conveyor struct {
 
 func (c *Conveyor) fill() {
 	pattern := "gggb...gggbgggg"
-	for i := 0; i < 90; i++ {
+	for i := 0; i < 23; i++ {
 		v := pattern[i%len(pattern)]
 		switch v {
 		case '.':
