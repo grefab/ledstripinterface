@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package ledstripinterface;
+
+import "google/protobuf/empty.proto";
+
+service Display {
+    rpc ShowFrame (Frame) returns (google.protobuf.Empty);
+}
+
+message Frame {
+    repeated Color frames = 1;
+}
+
+message Color {
+    uint32 r = 1;
+    uint32 g = 2;
+    uint32 b = 3;
+}

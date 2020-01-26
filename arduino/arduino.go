@@ -2,15 +2,10 @@ package arduino
 
 import (
 	"github.com/tarm/serial"
+	pb "ledstripinterface/pb"
 	"log"
 	"time"
 )
-
-type Color struct {
-	R uint8
-	G uint8
-	B uint8
-}
 
 var connection *serial.Port
 
@@ -26,7 +21,7 @@ func EstablishConnection(comPort string) error {
 	return nil
 }
 
-func SendStrip(strip []Color) {
+func SendStrip(strip []*pb.Color) {
 	startTime := time.Now()
 	for _, color := range strip {
 		// Our protocol treats 000 as flush,
@@ -41,7 +36,7 @@ func SendStrip(strip []Color) {
 		if color.B == 0 {
 			color.B = 1
 		}
-		data := []byte{color.R, color.G, color.B}
+		data := []byte{byte(color.R), byte(color.G), byte(color.B)}
 		write(data)
 	}
 	write([]byte{0, 0, 0})
@@ -65,16 +60,16 @@ func write(data []byte) {
 	}
 }
 
-func MakeStrip(num int, highlight uint8) (strip []Color) {
+func MakeStrip(num int, highlight uint32) (strip []*pb.Color) {
 	for i := 0; i < num; i++ {
-		strip = append(strip, Color{
+		strip = append(strip, &pb.Color{
 			R: highlight * 3,
 			G: highlight * 3,
 			B: highlight * 3,
 		})
 	}
 
-	strip[highlight] = Color{
+	strip[highlight] = &pb.Color{
 		R: 255,
 		G: 255,
 		B: 255,
