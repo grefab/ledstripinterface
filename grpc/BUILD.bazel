@@ -7,7 +7,7 @@ go_library(
         "helper.go",
         "server.go",
     ],
-    importpath = "ledstripinterface/lib",
+    importpath = "ledstripinterface/grpc",
     visibility = ["//visibility:public"],
     deps = [
         "//arduino:go_default_library",

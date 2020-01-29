@@ -1,4 +1,4 @@
-package lib
+package grpc
 
 import (
 	"ledstripinterface/arduino"

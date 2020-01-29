@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"ledstripinterface/lib"
+	"ledstripinterface/grpc"
 	pb "ledstripinterface/pb"
 	"log"
 	"time"
@@ -20,14 +20,14 @@ func main() {
 		runAsClient(*endpoint)
 	} else {
 		log.Print("running in server mode. see -help for other options")
-		ip, port := lib.ParseEndpoint(*endpoint)
+		ip, port := grpc.ParseEndpoint(*endpoint)
 		log.Printf("rs232 to arduino: %v, running gRPC server on %v:%v", *serialPort, ip, port)
-		lib.RunServer(ip, port, *serialPort)
+		grpc.RunServer(ip, port, *serialPort)
 	}
 }
 
 func runAsClient(endpoint string) {
-	display := lib.NewRemoteDisplay(endpoint)
+	display := grpc.NewRemoteDisplay(endpoint)
 	frames := make(chan []*pb.Color, 100)
 	go updateState(frames)
 
