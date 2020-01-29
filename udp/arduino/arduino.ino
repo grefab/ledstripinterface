@@ -19,6 +19,7 @@ void setupLeds() {
   LEDS.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   LEDS.setBrightness(32);
   initLedsBlack();
+  initLedsYellow();
 }
 
 void ledWelcome() {
@@ -48,6 +49,13 @@ void initLedsWhite() {
 void initLedsGreen() {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB::Green;
+  }
+  FastLED.show();
+}
+void initLedsYellow() {
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB::Yellow;
+    leds[i].fadeLightBy(220);
   }
   FastLED.show();
 }
