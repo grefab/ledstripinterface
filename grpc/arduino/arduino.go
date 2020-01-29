@@ -55,8 +55,16 @@ func (controller *Controller) EstablishConnection(comPort string) error {
 }
 
 func (controller *Controller) SendStrip(strip []*pb.Color) {
-	// we need 3 bytes for every color and another 3 for the finished signal 0,0,0
-	data := make([]byte, 0, (len(strip)+1)*3)
+	data := StripToBytes(strip)
+	data = append(data, 0)
+	data = append(data, 0)
+	data = append(data, 0)
+	controller.write(data)
+	<-controller.received // should be OK
+}
+
+func StripToBytes(strip []*pb.Color) []byte {
+	data := make([]byte, 0, len(strip)*3)
 	for _, color := range strip {
 		// Our protocol treats 000 as flush, so we exchange color values of 0 by 1 here.
 		// Should have no visible effect for LEDs.
@@ -73,11 +81,7 @@ func (controller *Controller) SendStrip(strip []*pb.Color) {
 		data = append(data, byte(color.G))
 		data = append(data, byte(color.B))
 	}
-	data = append(data, 0)
-	data = append(data, 0)
-	data = append(data, 0)
-	controller.write(data)
-	<-controller.received // should be OK
+	return data
 }
 
 func (controller *Controller) write(data []byte) {
