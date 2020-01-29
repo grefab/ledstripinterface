@@ -7,6 +7,7 @@ go_library(
     visibility = ["//visibility:private"],
     deps = [
         "//grpc:go_default_library",
+        "//grpc/arduino:go_default_library",
         "//pb:go_default_library",
     ],
 )

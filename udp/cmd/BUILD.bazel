@@ -5,7 +5,11 @@ go_library(
     srcs = ["main.go"],
     importpath = "ledstripinterface/udp/cmd",
     visibility = ["//visibility:private"],
-    deps = ["//udp:go_default_library"],
+    deps = [
+        "//grpc/arduino:go_default_library",
+        "//pb:go_default_library",
+        "//udp:go_default_library",
+    ],
 )
 
 go_binary(

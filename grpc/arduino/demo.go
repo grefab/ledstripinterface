@@ -6,6 +6,42 @@ import (
 	"time"
 )
 
+func Breathe(render func(frame []*pb.Color) error) {
+	const frameDuration = time.Second / 200 // Hz
+	brightness := byte(0)
+
+	for {
+		startTime := time.Now()
+		frame := makeFullFrame(brightness)
+		brightness++
+		err := render(frame)
+		if err != nil {
+			log.Print(err)
+		}
+		duration := time.Now().Sub(startTime)
+
+		pause := frameDuration - duration
+		if pause <= 0 {
+			log.Printf("render overflow: %v", pause)
+		} else {
+			time.Sleep(pause)
+		}
+	}
+}
+
+func makeFullFrame(brightness byte) []*pb.Color {
+	leds := 216
+	blackFrame := make([]*pb.Color, leds)
+	for i := 0; i < leds; i++ {
+		blackFrame[i] = &pb.Color{
+			R: uint32(brightness),
+			G: uint32(brightness),
+			B: uint32(brightness),
+		}
+	}
+	return blackFrame
+}
+
 func RunDemo(send func(frame []*pb.Color) error) {
 	frames := make(chan []*pb.Color, 100)
 	go updateState(frames)
