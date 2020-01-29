@@ -10,16 +10,30 @@ func Breathe(render func(frame []*pb.Color) error) {
 	const frameDuration = time.Second / 200 // Hz
 	brightness := byte(0)
 
+	upwards := true
+	minimum := byte(64)
+	maximum := byte(255)
 	for {
 		startTime := time.Now()
-		frame := makeFullFrame(brightness)
-		brightness++
-		err := render(frame)
-		if err != nil {
-			log.Print(err)
+		{
+			frame := makeFullFrame(brightness)
+			err := render(frame)
+			if err != nil {
+				log.Print(err)
+			}
+			if brightness >= maximum {
+				upwards = false
+			}
+			if brightness <= minimum {
+				upwards = true
+			}
+			if upwards {
+				brightness++
+			} else {
+				brightness--
+			}
 		}
 		duration := time.Now().Sub(startTime)
-
 		pause := frameDuration - duration
 		if pause <= 0 {
 			log.Printf("render overflow: %v", pause)
