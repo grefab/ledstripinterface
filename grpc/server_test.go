@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"ledstripinterface/arduino"
+	"ledstripinterface/grpc/arduino"
 	pb "ledstripinterface/pb"
 	"log"
 	"testing"

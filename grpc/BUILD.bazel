@@ -10,7 +10,7 @@ go_library(
     importpath = "ledstripinterface/grpc",
     visibility = ["//visibility:public"],
     deps = [
-        "//arduino:go_default_library",
+        "//grpc/arduino:go_default_library",
         "//pb:go_default_library",
         "@io_bazel_rules_go//proto/wkt:empty_go_proto",
         "@org_golang_google_grpc//:go_default_library",
@@ -22,7 +22,7 @@ go_test(
     srcs = ["server_test.go"],
     embed = [":go_default_library"],
     deps = [
-        "//arduino:go_default_library",
+        "//grpc/arduino:go_default_library",
         "//pb:go_default_library",
     ],
 )

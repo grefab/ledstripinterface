@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
-	"ledstripinterface/arduino"
+	"ledstripinterface/grpc/arduino"
 	pb "ledstripinterface/pb"
 	"net"
 )
