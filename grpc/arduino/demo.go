@@ -14,35 +14,36 @@ func Breathe(render func(frame pb.Frame) error) {
 	upwards := true
 	minimum := 0.3
 	maximum := 1.0
-
 	lastFrame := makeFullFrame(pb.Color{R: 128, G: 128, B: 128})
-	for {
-		startTime := time.Now()
-		{
-			frame := makeFullFrame(pb.Color{
-				R: uint32(233 * brightness),
-				G: uint32(130 * brightness),
-				B: uint32(35 * brightness),
-			})
-			if !proto.Equal(&frame, &lastFrame) {
-				lastFrame = frame
-				err := render(frame)
-				if err != nil {
-					log.Print(err)
-				}
-			}
-			if brightness >= maximum {
-				upwards = false
-			}
-			if brightness <= minimum {
-				upwards = true
-			}
-			if upwards {
-				brightness += 0.01
-			} else {
-				brightness -= 0.01
+	renderCycle := func() {
+		frame := makeFullFrame(pb.Color{
+			R: uint32(233 * brightness),
+			G: uint32(130 * brightness),
+			B: uint32(35 * brightness),
+		})
+		if !proto.Equal(&frame, &lastFrame) {
+			lastFrame = frame
+			err := render(frame)
+			if err != nil {
+				log.Print(err)
 			}
 		}
+		if brightness >= maximum {
+			upwards = false
+		}
+		if brightness <= minimum {
+			upwards = true
+		}
+		if upwards {
+			brightness += 0.01
+		} else {
+			brightness -= 0.01
+		}
+	}
+
+	for {
+		startTime := time.Now()
+		renderCycle()
 		duration := time.Now().Sub(startTime)
 		pause := frameDuration - duration
 		if pause <= 0 {
