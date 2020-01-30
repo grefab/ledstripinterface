@@ -34,6 +34,6 @@ func RunServer(ip net.IP, port int, comPort string) {
 }
 
 func (d *displayServer) ShowFrame(_ context.Context, frame *pb.Frame) (*empty.Empty, error) {
-	d.controller.SendStrip(frame.Pixels)
+	d.controller.SendFrame(*frame)
 	return &empty.Empty{}, nil
 }

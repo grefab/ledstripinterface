@@ -54,8 +54,8 @@ func (controller *Controller) EstablishConnection(comPort string) error {
 	return nil
 }
 
-func (controller *Controller) SendStrip(strip []*pb.Color) {
-	data := StripToBytes(strip)
+func (controller *Controller) SendFrame(frame pb.Frame) {
+	data := FrameToBytes(frame)
 	data = append(data, 0)
 	data = append(data, 0)
 	data = append(data, 0)
@@ -63,9 +63,9 @@ func (controller *Controller) SendStrip(strip []*pb.Color) {
 	<-controller.received // should be OK
 }
 
-func StripToBytes(strip []*pb.Color) []byte {
-	data := make([]byte, 0, len(strip)*3)
-	for _, color := range strip {
+func FrameToBytes(frame pb.Frame) []byte {
+	data := make([]byte, 0, len(frame.Pixels)*3)
+	for _, color := range frame.Pixels {
 		// Our protocol treats 000 as flush, so we exchange color values of 0 by 1 here.
 		// Should have no visible effect for LEDs.
 		if color.R == 0 {
@@ -91,19 +91,19 @@ func (controller *Controller) write(data []byte) {
 	}
 }
 
-func MakeStrip(num int, highlight uint32) (strip []*pb.Color) {
+func MakeFrame(num int, highlight uint32) (frame pb.Frame) {
 	for i := 0; i < num; i++ {
-		strip = append(strip, &pb.Color{
+		frame.Pixels = append(frame.Pixels, &pb.Color{
 			R: highlight * 3,
 			G: highlight * 3,
 			B: highlight * 3,
 		})
 	}
 
-	strip[highlight] = &pb.Color{
+	frame.Pixels[highlight] = &pb.Color{
 		R: 255,
 		G: 255,
 		B: 255,
 	}
-	return strip
+	return frame
 }

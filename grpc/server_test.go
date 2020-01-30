@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"ledstripinterface/grpc/arduino"
-	pb "ledstripinterface/pb"
 	"log"
 	"testing"
 	"time"
@@ -22,9 +21,8 @@ func TestServer(t *testing.T) {
 	var i uint32 = 0
 	for {
 		startTime := time.Now()
-		err := display.ShowFrame(&pb.Frame{
-			Frames: arduino.MakeStrip(num, i),
-		})
+		frame := arduino.MakeFrame(num, i)
+		err := display.ShowFrame(&frame)
 		if err != nil {
 			panic(err)
 		}

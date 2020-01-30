@@ -1,25 +1,35 @@
 package arduino
 
 import (
+	"github.com/golang/protobuf/proto"
 	pb "ledstripinterface/pb"
 	"log"
 	"time"
 )
 
-func Breathe(render func(frame []*pb.Color) error) {
-	const frameDuration = time.Second / 200 // Hz
-	brightness := byte(0)
+func Breathe(render func(frame pb.Frame) error) {
+	const frameDuration = time.Second / 500 // Hz
+	brightness := 0.5
 
 	upwards := true
-	minimum := byte(64)
-	maximum := byte(255)
+	minimum := 0.3
+	maximum := 1.0
+
+	lastFrame := makeFullFrame(pb.Color{R: 128, G: 128, B: 128})
 	for {
 		startTime := time.Now()
 		{
-			frame := makeFullFrame(brightness)
-			err := render(frame)
-			if err != nil {
-				log.Print(err)
+			frame := makeFullFrame(pb.Color{
+				R: uint32(233 * brightness),
+				G: uint32(130 * brightness),
+				B: uint32(35 * brightness),
+			})
+			if !proto.Equal(&frame, &lastFrame) {
+				lastFrame = frame
+				err := render(frame)
+				if err != nil {
+					log.Print(err)
+				}
 			}
 			if brightness >= maximum {
 				upwards = false
@@ -28,9 +38,9 @@ func Breathe(render func(frame []*pb.Color) error) {
 				upwards = true
 			}
 			if upwards {
-				brightness++
+				brightness += 0.01
 			} else {
-				brightness--
+				brightness -= 0.01
 			}
 		}
 		duration := time.Now().Sub(startTime)
@@ -43,17 +53,13 @@ func Breathe(render func(frame []*pb.Color) error) {
 	}
 }
 
-func makeFullFrame(brightness byte) []*pb.Color {
-	leds := 216
-	blackFrame := make([]*pb.Color, leds)
-	for i := 0; i < leds; i++ {
-		blackFrame[i] = &pb.Color{
-			R: uint32(brightness),
-			G: uint32(brightness),
-			B: uint32(brightness),
-		}
+func makeFullFrame(color pb.Color) pb.Frame {
+	nLed := 216
+	frame := pb.Frame{}
+	for i := 0; i < nLed; i++ {
+		frame.Pixels = append(frame.Pixels, &color)
 	}
-	return blackFrame
+	return frame
 }
 
 func RunDemo(send func(frame []*pb.Color) error) {

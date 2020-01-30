@@ -16,12 +16,12 @@ func TestArduino(t *testing.T) {
 	}
 
 	// display something fancy with stable fps
-	const frameDuration time.Duration = time.Second / 10
+	const frameDuration = time.Second / 10
 	const num = 16
 	var i uint32 = 0
 	for {
 		startTime := time.Now()
-		controller.SendStrip(MakeStrip(num, i))
+		controller.SendFrame(MakeFrame(num, i))
 		i = (i + 1) % num
 		duration := time.Now().Sub(startTime)
 
