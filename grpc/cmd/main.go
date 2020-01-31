@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
+	"ledstripinterface/demo"
 	"ledstripinterface/grpc"
-	"ledstripinterface/grpc/arduino"
 	pb "ledstripinterface/pb"
 	"log"
 )
@@ -18,7 +18,7 @@ func main() {
 	if *clientMode {
 		log.Print("running in client mode")
 		display := grpc.NewRemoteDisplay(*endpoint)
-		arduino.RunDemo(func(frame []*pb.Color) error {
+		demo.PlayShiftRegisterDemo(func(frame []*pb.Color) error {
 			return display.ShowFrame(&pb.Frame{
 				Pixels: frame,
 			})

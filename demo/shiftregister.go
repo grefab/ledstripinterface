@@ -1,69 +1,12 @@
-package arduino
+package demo
 
 import (
-	"github.com/golang/protobuf/proto"
 	pb "ledstripinterface/pb"
 	"log"
 	"time"
 )
 
-func Breathe(render func(frame pb.Frame) error) {
-	const frameDuration = time.Second / 500 // Hz
-	brightness := 0.5
-
-	upwards := true
-	minimum := 0.3
-	maximum := 1.0
-	lastFrame := makeFullFrame(pb.Color{R: 128, G: 128, B: 128})
-	renderCycle := func() {
-		frame := makeFullFrame(pb.Color{
-			R: uint32(233 * brightness),
-			G: uint32(130 * brightness),
-			B: uint32(35 * brightness),
-		})
-		if !proto.Equal(&frame, &lastFrame) {
-			lastFrame = frame
-			err := render(frame)
-			if err != nil {
-				log.Print(err)
-			}
-		}
-		if brightness >= maximum {
-			upwards = false
-		}
-		if brightness <= minimum {
-			upwards = true
-		}
-		if upwards {
-			brightness += 0.01
-		} else {
-			brightness -= 0.01
-		}
-	}
-
-	for {
-		startTime := time.Now()
-		renderCycle()
-		duration := time.Now().Sub(startTime)
-		pause := frameDuration - duration
-		if pause <= 0 {
-			log.Printf("render overflow: %v", pause)
-		} else {
-			time.Sleep(pause)
-		}
-	}
-}
-
-func makeFullFrame(color pb.Color) pb.Frame {
-	nLed := 216
-	frame := pb.Frame{}
-	for i := 0; i < nLed; i++ {
-		frame.Pixels = append(frame.Pixels, &color)
-	}
-	return frame
-}
-
-func RunDemo(send func(frame []*pb.Color) error) {
+func PlayShiftRegisterDemo(send func(frame []*pb.Color) error) {
 	frames := make(chan []*pb.Color, 100)
 	go updateState(frames)
 
