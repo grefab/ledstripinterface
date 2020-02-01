@@ -10,6 +10,7 @@ import (
 
 func Play(render func(frame pb.Frame) error) {
 	var lastState state
+	stateUpdated := false
 	m := sync.Mutex{}
 
 	go func() {
@@ -21,6 +22,7 @@ func Play(render func(frame pb.Frame) error) {
 				state.Update()
 				m.Lock()
 				lastState = *state
+				stateUpdated = true
 				m.Unlock()
 			}
 		}
@@ -29,12 +31,20 @@ func Play(render func(frame pb.Frame) error) {
 	const frameDuration = time.Second / 100 // Hz
 	for {
 		startTime := time.Now()
+		var frame pb.Frame
+		renderNecessary := false
 		m.Lock()
-		frame := lastState.ToFrame()
+		if stateUpdated {
+			frame = lastState.ToFrame()
+			stateUpdated = false
+			renderNecessary = true
+		}
 		m.Unlock()
-		err := render(frame)
-		if err != nil {
-			log.Print(err)
+		if renderNecessary {
+			err := render(frame)
+			if err != nil {
+				log.Print(err)
+			}
 		}
 		duration := time.Now().Sub(startTime)
 		pause := frameDuration - duration
