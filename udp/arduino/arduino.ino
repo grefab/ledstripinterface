@@ -13,7 +13,7 @@ static byte mymac[] = { 0x70, 0x69, 0x69, 0x2D, 0x30, 0x31 };
 static byte myip[] = { 10, 42, 0, 201 };
 static byte gwip[] = { 10, 42, 0, 1 };
 #endif
-byte Ethernet::buffer[NUM_LEDS * 3]; // TCP/IP send and receive buffer
+byte Ethernet::buffer[NUM_LEDS * 3 + 43]; // TCP/IP send and receive buffer (frame size), UDP adds 43 bytes of header before data
 
 void setupLeds() {
   LEDS.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
@@ -66,7 +66,7 @@ void udpSerialPrint(uint16_t dest_port,
                     const char *data,
                     uint16_t len) {
   for (int i = 0; i < NUM_LEDS; ++i) {
-    leds[i] = CRGB(data[i*3 + 0], data[i*3 + 1], data[i*3 + 2]);
+    leds[i] = CRGB(data[i * 3 + 0], data[i * 3 + 1], data[i * 3 + 2]);
   }
   FastLED.show();
 }
