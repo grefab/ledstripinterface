@@ -8,7 +8,6 @@ go_library(
     deps = [
         "//demo:go_default_library",
         "//proto:go_default_library",
-        "//serial:go_default_library",
         "//service:go_default_library",
         "//udp:go_default_library",
     ],

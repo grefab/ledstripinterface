@@ -4,7 +4,6 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	pb "ledstripinterface/proto"
-	"log"
 	"time"
 )
 
@@ -26,9 +25,7 @@ func NewRemoteDisplay(serverAddr string) *remoteDisplay {
 }
 
 func (c *remoteDisplay) ShowFrame(frame *pb.Frame) (err error) {
-	startTime := time.Now()
 	ctx, _ := context.WithTimeout(context.Background(), time.Millisecond*500)
 	_, err = c.display.ShowFrame(ctx, frame)
-	log.Printf("ShowFrame took: %v", time.Now().Sub(startTime))
 	return err
 }

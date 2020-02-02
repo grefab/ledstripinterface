@@ -39,7 +39,7 @@ type Conveyor struct {
 
 func (c *Conveyor) fill() {
 	pattern := "gggb...gggbgggg"
-	for i := 0; i < 23; i++ {
+	for i := 0; i < 60; i++ {
 		v := pattern[i%len(pattern)]
 		switch v {
 		case '.':
@@ -86,7 +86,7 @@ func updateState(colors chan []*pb.Color) {
 				bufStrip = append(bufStrip, &color)
 			}
 
-			var intensity uint32 = 16
+			var intensity uint32 = 255
 			bufStrip[4] = &pb.Color{R: intensity, G: intensity, B: 0}
 			bufStrip[7] = &pb.Color{R: intensity, G: intensity, B: 0}
 			colors <- bufStrip
@@ -100,7 +100,7 @@ func updateState(colors chan []*pb.Color) {
 		}
 		sendStrip()
 
-		time.Sleep(time.Millisecond * 1500)
+		time.Sleep(time.Millisecond * 500)
 		if len(future.Vials) == 0 {
 			future.fill()
 		}

@@ -13,7 +13,7 @@ func main() {
 	log.SetFlags(log.LUTC | log.Ldate | log.Ltime | log.Lmicroseconds)
 	clientMode := flag.Bool("client", false, "start in client mode, tests connection to server, needs endpoint")
 	endpoint := flag.String("endpoint", "0.0.0.0:15050", "endpoint to listen to in server mode or to connect to in client mode")
-	udpTarget := flag.String("updTarget", "10.13.37.10:1337", "IP and port for UDP target")
+	udpTarget := flag.String("updTarget", "10.42.0.57:1337", "IP and port for UDP target")
 	flag.Parse()
 
 	if *clientMode {
@@ -25,7 +25,7 @@ func main() {
 	} else {
 		log.Print("running in server mode. see -help for other options")
 		ip, port := service.ParseEndpoint(*endpoint)
-		log.Printf("gRPC to UPD on arduino: %v, running gRPC server on %v:%v", *udpTarget, ip, port)
+		log.Printf("running gRPC service on %v:%v to supply UPD on arduino: %v", ip, port, *udpTarget)
 		service.RunServer(ip, port, func(frame pb.Frame) {
 			data := make([]byte, 0, len(frame.Pixels)*3)
 			for _, color := range frame.Pixels {
