@@ -16,7 +16,6 @@ func RunServer(ip net.IP, port int, sendFrame func(frame pb.Frame)) {
 	d := displayServer{SendFrame: sendFrame}
 	s := grpc.NewServer()
 	pb.RegisterDisplayServer(s, &d)
-
 	lis, err := net.ListenTCP("tcp", &net.TCPAddr{IP: ip, Port: port})
 	if err != nil {
 		panic(err)
@@ -30,4 +29,8 @@ func RunServer(ip net.IP, port int, sendFrame func(frame pb.Frame)) {
 func (d *displayServer) ShowFrame(_ context.Context, frame *pb.Frame) (*empty.Empty, error) {
 	d.SendFrame(*frame)
 	return &empty.Empty{}, nil
+}
+
+func (d *displayServer) ShowShiftRegister(context.Context, *pb.ShiftRegister) (*empty.Empty, error) {
+	panic("implement me")
 }

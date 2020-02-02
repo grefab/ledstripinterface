@@ -6,6 +6,7 @@ import "google/protobuf/empty.proto";
 
 service Display {
     rpc ShowFrame (Frame) returns (google.protobuf.Empty);
+    rpc ShowShiftRegister (ShiftRegister) returns (google.protobuf.Empty);
 }
 
 message Frame {
@@ -16,4 +17,9 @@ message Color {
     uint32 r = 1;
     uint32 g = 2;
     uint32 b = 3;
+}
+
+message ShiftRegister {
+    repeated Color vials = 1;
+    uint32 ledCount = 2;
 }
