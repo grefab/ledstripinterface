@@ -7,8 +7,6 @@ import (
 	pb "ledstripinterface/proto"
 )
 
-const vialWidth = 4
-
 func Add(sr *pb.ShiftRegister, vial pb.Color) {
 	sr.Vials = append(sr.Vials, &vial)
 }
@@ -73,9 +71,10 @@ func makeIdealImage(sr pb.ShiftRegister) *image.RGBA {
 	return ideal
 }
 
+const vialWidth = 3
+
 func renderVial(img *image.RGBA, vial *pb.Color, pos int) {
 	img.Set(pos*vialWidth+0, 0, color.Black)
 	img.Set(pos*vialWidth+1, 0, color.RGBA{R: uint8(vial.R), G: uint8(vial.G), B: uint8(vial.B), A: 255})
-	img.Set(pos*vialWidth+2, 0, color.RGBA{R: uint8(vial.R), G: uint8(vial.G), B: uint8(vial.B), A: 255})
-	img.Set(pos*vialWidth+3, 0, color.Black)
+	img.Set(pos*vialWidth+2, 0, color.Black)
 }
