@@ -9,6 +9,8 @@ import (
 	"os"
 )
 
+const vialWidth = 4
+
 func Add(sr *pb.ShiftRegister, vial pb.Color) {
 	sr.Vials = append(sr.Vials, &vial)
 }
@@ -21,23 +23,20 @@ func Shift(vial pb.Color, sr *pb.ShiftRegister) []pb.Frame {
 }
 
 func renderTransition(sr pb.ShiftRegister, newVial pb.Color) (frames []pb.Frame) {
-	// we assume 4 pixels per vial for our ideal image
+	// we assume vialWidth pixels per vial for our ideal image
 	ideal := makeIdealImage(sr)
-	extended := image.NewRGBA(image.Rect(0, 0, (len(sr.Vials)+1)*4, 1))
+	extended := image.NewRGBA(image.Rect(0, 0, (len(sr.Vials)+1)*vialWidth, 1))
 	// copy existing rendered vials
 	for x := 0; x < ideal.Bounds().Dx(); x++ {
 		extended.Set(x, 0, ideal.At(x, 0))
 	}
 	// add new vial
-	extended.Set(ideal.Bounds().Dx()+0, 0, color.Black)
-	extended.Set(ideal.Bounds().Dx()+1, 0, color.RGBA{R: uint8(newVial.R), G: uint8(newVial.G), B: uint8(newVial.B), A: 255})
-	extended.Set(ideal.Bounds().Dx()+2, 0, color.RGBA{R: uint8(newVial.R), G: uint8(newVial.G), B: uint8(newVial.B), A: 255})
-	extended.Set(ideal.Bounds().Dx()+3, 0, color.Black)
+	renderVial(extended, &newVial, ideal.Bounds().Dx())
 	// bloat image so we have something to roll our window over
 	bloatSize := 10
 	bloated := resize.Resize(uint(extended.Bounds().Dx()*bloatSize), 1, extended, resize.NearestNeighbor)
 	// move window over
-	for i := 1; i < bloatSize*4; i++ {
+	for i := 1; i < bloatSize*vialWidth; i++ {
 		bloated, ok := bloated.(*image.RGBA)
 		if !ok {
 			panic("cannot convert image")
@@ -83,13 +82,17 @@ func writePng(img image.Image, filename string) {
 }
 
 func makeIdealImage(sr pb.ShiftRegister) *image.RGBA {
-	// we render 4 pixels per vial for our ideal image
-	ideal := image.NewRGBA(image.Rect(0, 0, len(sr.Vials)*4, 1))
+	// we render vialWidth pixels per vial for our ideal image
+	ideal := image.NewRGBA(image.Rect(0, 0, len(sr.Vials)*vialWidth, 1))
 	for i := range sr.Vials {
-		ideal.Set(i*4+0, 0, color.Black)
-		ideal.Set(i*4+1, 0, color.RGBA{R: uint8(sr.Vials[i].R), G: uint8(sr.Vials[i].G), B: uint8(sr.Vials[i].B), A: 255})
-		ideal.Set(i*4+2, 0, color.RGBA{R: uint8(sr.Vials[i].R), G: uint8(sr.Vials[i].G), B: uint8(sr.Vials[i].B), A: 255})
-		ideal.Set(i*4+3, 0, color.Black)
+		renderVial(ideal, sr.Vials[i], i)
 	}
 	return ideal
+}
+
+func renderVial(img *image.RGBA, vial *pb.Color, pos int) {
+	img.Set(pos*vialWidth+0, 0, color.Black)
+	img.Set(pos*vialWidth+1, 0, color.RGBA{R: uint8(vial.R), G: uint8(vial.G), B: uint8(vial.B), A: 255})
+	img.Set(pos*vialWidth+2, 0, color.RGBA{R: uint8(vial.R), G: uint8(vial.G), B: uint8(vial.B), A: 255})
+	img.Set(pos*vialWidth+3, 0, color.Black)
 }
