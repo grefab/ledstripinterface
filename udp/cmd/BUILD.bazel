@@ -6,8 +6,9 @@ go_library(
     importpath = "ledstripinterface/udp/cmd",
     visibility = ["//visibility:private"],
     deps = [
-        "//grpc/arduino:go_default_library",
-        "//pb:go_default_library",
+        "//demo/engine:go_default_library",
+        "//proto:go_default_library",
+        "//serial:go_default_library",
         "//udp:go_default_library",
     ],
 )

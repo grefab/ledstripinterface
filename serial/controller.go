@@ -1,8 +1,8 @@
-package arduino
+package serial
 
 import (
 	"github.com/tarm/serial"
-	pb "ledstripinterface/pb"
+	pb "ledstripinterface/proto"
 	"log"
 	"strings"
 )
@@ -54,7 +54,7 @@ func (controller *Controller) EstablishConnection(comPort string) error {
 	return nil
 }
 
-func (controller *Controller) SendFrame(frame pb.Frame) {
+func (controller Controller) SendFrame(frame pb.Frame) {
 	data := FrameToBytes(frame)
 	data = append(data, 0)
 	data = append(data, 0)

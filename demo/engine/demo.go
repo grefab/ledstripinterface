@@ -1,9 +1,8 @@
 package engine
 
 import (
-	pb "ledstripinterface/pb"
+	pb "ledstripinterface/proto"
 	"log"
-	"math/rand"
 	"sync"
 	"time"
 )
@@ -76,21 +75,21 @@ func NewState(nLed int) *state {
 		return a
 	}
 	return &state{
-		baseColor: pb.Color{
-			R: 255,
-			G: 255,
-			B: 255,
-		},
-		// warm white, similar to halogen, determined by experiment with support of https://encycolorpedia.com
 		// baseColor: pb.Color{
-		// 	R: 233,
-		// 	G: 130,
-		// 	B: 35,
+		// 	R: 255,
+		// 	G: 180,
+		// 	B: 255,
 		// },
+		// warm white, similar to halogen, determined by experiment with support of https://encycolorpedia.com
+		baseColor: pb.Color{
+			R: 233,
+			G: 130,
+			B: 35,
+		},
 		brightness: 0.5,
 		upwards:    true,
-		minimum:    0.3,
-		maximum:    1.0,
+		minimum:    0.5,
+		maximum:    0.99,
 		timePassed: 0,
 		pixels:     makeCenter(),
 		backBuffer: makeCenter(),
@@ -98,54 +97,56 @@ func NewState(nLed int) *state {
 }
 
 func (s *state) Update() {
-	/*
-		// global breathe
-		if s.brightness >= s.maximum {
-			s.upwards = false
-		}
-		if s.brightness <= s.minimum {
-			s.upwards = true
-		}
-		if s.upwards {
-			s.brightness += 0.01
-		} else {
-			s.brightness -= 0.01
-		}
+	// global breathe
+	if s.brightness >= s.maximum {
+		s.upwards = false
+	}
+	if s.brightness <= s.minimum {
+		s.upwards = true
+	}
+	if s.upwards {
+		s.brightness += 0.0075
+	} else {
+		s.brightness -= 0.0075
+	}
 
-		for i := range s.pixels {
-			s.pixels[i] = s.brightness
-		}
-	*/
+	for i := range s.pixels {
+		s.pixels[i] = s.brightness
+	}
 
 	/*
 		// randomly distribute
 		s.pixels[rand.Int()%len(s.pixels)] = s.brightness
 	*/
+
 	/*
 		// sparkle
 		for i := range s.pixels {
 			s.pixels[i] = 0
 		}
-		for i := 0; i < len(s.pixels) / 10; i++ {
+		for i := 0; i < len(s.pixels)/10; i++ {
 			s.pixels[rand.Int()%len(s.pixels)] = 1
 		}
 	*/
 
-	// random glow
-	s.timePassed += time.Millisecond * 10
-	if s.timePassed > time.Second {
-		s.timePassed = 0
-		const size = 10
-		for i := size / 2; i < len(s.pixels)-size/2; i += size {
-			dst := s.minimum + (rand.Float32() / (s.maximum + s.minimum))
-			for j := i - size/2; j < i+size/2; j++ {
-				s.backBuffer[j] = dst
+	/*
+		// random glow
+		s.timePassed += time.Millisecond * 10
+		if s.timePassed > time.Second {
+			s.timePassed = 0
+			const size = 10
+			for i := size / 2; i < len(s.pixels)-size/2; i += size {
+				dst := s.minimum + (rand.Float32() / (s.maximum + s.minimum))
+				for j := i - size/2; j < i+size/2; j++ {
+					s.backBuffer[j] = dst
+				}
 			}
 		}
-	}
-	for i := range s.pixels {
-		s.pixels[i] += (s.backBuffer[i] - s.pixels[i]) / 50
-	}
+		for i := range s.pixels {
+			s.pixels[i] += (s.backBuffer[i] - s.pixels[i]) / 50
+
+		}
+	*/
 }
 
 func (s *state) ToFrame() pb.Frame {

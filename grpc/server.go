@@ -4,22 +4,16 @@ import (
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
-	"ledstripinterface/grpc/arduino"
-	pb "ledstripinterface/pb"
+	pb "ledstripinterface/proto"
 	"net"
 )
 
 type displayServer struct {
-	controller arduino.Controller
+	SendFrame func(frame pb.Frame)
 }
 
-func RunServer(ip net.IP, port int, comPort string) {
-	d := displayServer{}
-	err := d.controller.EstablishConnection(comPort)
-	if err != nil {
-		panic(err)
-	}
-
+func RunServer(ip net.IP, port int, sendFrame func(frame pb.Frame)) {
+	d := displayServer{SendFrame: sendFrame}
 	s := grpc.NewServer()
 	pb.RegisterDisplayServer(s, &d)
 
@@ -34,6 +28,6 @@ func RunServer(ip net.IP, port int, comPort string) {
 }
 
 func (d *displayServer) ShowFrame(_ context.Context, frame *pb.Frame) (*empty.Empty, error) {
-	d.controller.SendFrame(*frame)
+	d.SendFrame(*frame)
 	return &empty.Empty{}, nil
 }

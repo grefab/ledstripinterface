@@ -1,12 +1,12 @@
 package demo
 
 import (
-	pb "ledstripinterface/pb"
+	pb "ledstripinterface/proto"
 	"log"
 	"time"
 )
 
-func PlayShiftRegisterDemo(send func(frame []*pb.Color) error) {
+func PlayShiftRegisterDemo(send func(frame pb.Frame) error) {
 	frames := make(chan []*pb.Color, 100)
 	go updateState(frames)
 
@@ -15,7 +15,7 @@ func PlayShiftRegisterDemo(send func(frame []*pb.Color) error) {
 	for {
 		pixels := <-frames
 		startTime := time.Now()
-		err := send(pixels)
+		err := send(pb.Frame{Pixels: pixels})
 		if err != nil {
 			log.Print(err)
 		}

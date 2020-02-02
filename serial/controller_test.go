@@ -1,4 +1,4 @@
-package arduino
+package serial
 
 import (
 	"log"

@@ -3,7 +3,7 @@ package grpc
 import (
 	"context"
 	"google.golang.org/grpc"
-	pb "ledstripinterface/pb"
+	pb "ledstripinterface/proto"
 	"log"
 	"time"
 )
