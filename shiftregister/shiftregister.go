@@ -31,7 +31,7 @@ func renderTransition(sr pb.ShiftRegister, newVial pb.Color) (frames []pb.Frame)
 		extended.Set(x, 0, ideal.At(x, 0))
 	}
 	// add new vial
-	renderVial(extended, &newVial, ideal.Bounds().Dx())
+	renderVial(extended, &newVial, len(sr.Vials))
 	// bloat image so we have something to roll our window over
 	bloatSize := 10
 	bloated := resize.Resize(uint(extended.Bounds().Dx()*bloatSize), 1, extended, resize.NearestNeighbor)
