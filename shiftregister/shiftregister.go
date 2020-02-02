@@ -4,9 +4,7 @@ import (
 	"github.com/nfnt/resize"
 	"image"
 	"image/color"
-	"image/png"
 	pb "ledstripinterface/proto"
-	"os"
 )
 
 const vialWidth = 4
@@ -64,21 +62,6 @@ func imageToFrame(img image.Image) pb.Frame {
 		frame.Pixels = append(frame.Pixels, &pb.Color{R: 0, G: 0, B: 0})
 	}
 	return frame
-}
-
-func writePng(img image.Image, filename string) {
-	f, err := os.Create(filename)
-	if err != nil {
-		panic(err)
-	}
-	err = png.Encode(f, img)
-	if err != nil {
-		panic(err)
-	}
-	err = f.Close()
-	if err != nil {
-		panic(err)
-	}
 }
 
 func makeIdealImage(sr pb.ShiftRegister) *image.RGBA {
