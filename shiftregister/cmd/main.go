@@ -53,12 +53,9 @@ func main() {
 		}
 
 		startTime := time.Now()
-		frames := shiftregister.Shift(red, &sr)
-		log.Printf("frames: %v, duration: %v", len(frames), time.Now().Sub(startTime))
-
-		for _, frame := range frames {
-			framePipe <- frame
-		}
-		time.Sleep(time.Millisecond * 1000)
+		frames := 0
+		shiftregister.Shift(red, &sr, func(frame pb.Frame) { framePipe <- frame; frames++ })
+		log.Printf("frames: %v, duration: %v", frames, time.Now().Sub(startTime))
+		time.Sleep(time.Millisecond * 500)
 	}
 }

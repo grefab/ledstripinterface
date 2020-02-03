@@ -11,14 +11,13 @@ func Add(sr *pb.ShiftRegister, vial pb.Color) {
 	sr.Vials = append(sr.Vials, &vial)
 }
 
-func Shift(vial pb.Color, sr *pb.ShiftRegister) []pb.Frame {
-	frames := renderTransition(*sr, vial)
+func Shift(vial pb.Color, sr *pb.ShiftRegister, handleFrame func(pb.Frame)) {
+	renderTransition(*sr, vial, handleFrame)
 	sr.Vials = sr.Vials[1:]
 	sr.Vials = append(sr.Vials, &vial)
-	return frames
 }
 
-func renderTransition(sr pb.ShiftRegister, newVial pb.Color) (frames []pb.Frame) {
+func renderTransition(sr pb.ShiftRegister, newVial pb.Color, handleFrame func(pb.Frame)) {
 	// we assume vialWidth pixels per vial for our ideal image
 	ideal := makeIdealImage(sr)
 	extended := image.NewRGBA(image.Rect(0, 0, (len(sr.Vials)+1)*vialWidth, 1))
@@ -39,10 +38,8 @@ func renderTransition(sr pb.ShiftRegister, newVial pb.Color) (frames []pb.Frame)
 		}
 		subImg := bloated.SubImage(image.Rect(i, 0, ideal.Bounds().Dx()*bloatSize+i, 1))
 		pixels := resize.Resize(uint(sr.LedCount), 1, subImg, resize.Lanczos3)
-		// writePng(pixels, fmt.Sprintf("seq_%2d.png", i))
-		frames = append(frames, imageToFrame(pixels))
+		handleFrame(imageToFrame(pixels))
 	}
-	return frames
 }
 
 func imageToFrame(img image.Image) pb.Frame {
