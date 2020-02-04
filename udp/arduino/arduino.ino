@@ -104,6 +104,9 @@ void setup() {
   ether.printIp("IP:  ", ether.myip);
   ether.printIp("GW:  ", ether.gwip);
   ether.printIp("DNS: ", ether.dnsip);
+
+  // allow only for 25% brightness, so we don't use more than 2-3 amp on the wire
+  LEDS.setBrightness(64);
   ether.udpServerListenOnPort(&udpSerialPrint, 1337);
 }
 
