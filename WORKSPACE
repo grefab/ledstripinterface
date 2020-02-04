@@ -219,3 +219,10 @@ go_repository(
     sum = "h1:5Beo0mZN8dRzgrMMkDp0jc8YXQKx9DiJ2k1dkvGsn5A=",
     version = "v0.0.0-20190524140312-2c0ae7006135",
 )
+
+go_repository(
+    name = "com_github_nfnt_resize",
+    importpath = "github.com/nfnt/resize",
+    sum = "h1:zYyBkD/k9seD2A7fsi6Oo2LfFZAehjjQMERAvZLEDnQ=",
+    version = "v0.0.0-20180221191011-83c6a9932646",
+)
