@@ -13,7 +13,7 @@ func main() {
 	log.SetFlags(log.LUTC | log.Ldate | log.Ltime | log.Lmicroseconds)
 	clientMode := flag.Bool("client", false, "start in client mode, tests connection to server, needs endpoint")
 	endpoint := flag.String("endpoint", "0.0.0.0:15050", "endpoint to listen to in server mode or to connect to in client mode")
-	udpTarget := flag.String("updTarget", "10.42.0.57:1337", "IP and port for UDP target")
+	udpTarget := flag.String("udpTarget", "10.42.0.57:1337", "IP and port for UDP target")
 	flag.Parse()
 
 	if *clientMode {

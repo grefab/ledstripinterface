@@ -7,19 +7,21 @@ import (
 	pb "ledstripinterface/proto"
 )
 
-func Add(sr *pb.ShiftRegister, vial pb.Color) {
+type ShiftRegister pb.ShiftRegister
+
+func (sr *ShiftRegister) Add(vial pb.Color) {
 	sr.Vials = append(sr.Vials, &vial)
 }
 
-func Shift(vial pb.Color, sr *pb.ShiftRegister, handleFrame func(pb.Frame)) {
-	renderTransition(*sr, vial, handleFrame)
+func (sr *ShiftRegister) Shift(vial pb.Color, handleFrame func(pb.Frame)) {
+	sr.renderTransition(vial, handleFrame)
 	sr.Vials = sr.Vials[1:]
 	sr.Vials = append(sr.Vials, &vial)
 }
 
-func renderTransition(sr pb.ShiftRegister, newVial pb.Color, handleFrame func(pb.Frame)) {
+func (sr *ShiftRegister) renderTransition(newVial pb.Color, handleFrame func(pb.Frame)) {
 	// we assume vialWidth pixels per vial for our ideal image
-	ideal := makeIdealImage(sr)
+	ideal := sr.makeIdealImage()
 	extended := image.NewRGBA(image.Rect(0, 0, (len(sr.Vials)+1)*vialWidth, 1))
 	// copy existing rendered vials
 	for x := 0; x < ideal.Bounds().Dx(); x++ {
@@ -59,7 +61,7 @@ func imageToFrame(img image.Image) pb.Frame {
 	return frame
 }
 
-func makeIdealImage(sr pb.ShiftRegister) *image.RGBA {
+func (sr *ShiftRegister) makeIdealImage() *image.RGBA {
 	// we render vialWidth pixels per vial for our ideal image
 	ideal := image.NewRGBA(image.Rect(0, 0, len(sr.Vials)*vialWidth, 1))
 	for i := range sr.Vials {
