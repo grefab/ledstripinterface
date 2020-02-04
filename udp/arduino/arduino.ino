@@ -6,13 +6,9 @@ CRGB leds[NUM_LEDS];
 #include <EtherCard.h>
 #include <IPAddress.h>
 
-#define STATIC 0  // set to 1 to disable DHCP (adjust myip/gwip values below)
-
 static byte mymac[] = { 0x70, 0x69, 0x69, 0x2D, 0x30, 0x31 };
-#if STATIC
 static byte myip[] = { 10, 42, 0, 201 };
 static byte gwip[] = { 10, 42, 0, 1 };
-#endif
 byte Ethernet::buffer[NUM_LEDS * 3 + 43]; // TCP/IP send and receive buffer (frame size), UDP adds 43 bytes of header before data
 
 void setupLeds() {
@@ -22,7 +18,7 @@ void setupLeds() {
   initLedsYellow();
 }
 
-void ledWelcome() {
+void ledWelcomeGreen() {
   initLedsWhite();
   delay(100);
   initLedsGreen();
@@ -30,6 +26,17 @@ void ledWelcome() {
   initLedsWhite();
   delay(100);
   initLedsGreen();
+  delay(100);
+  initLedsWhite();
+}
+void ledWelcomeBlue() {
+  initLedsWhite();
+  delay(100);
+  initLedsBlue();
+  delay(100);
+  initLedsWhite();
+  delay(100);
+  initLedsBlue();
   delay(100);
   initLedsWhite();
 }
@@ -49,6 +56,12 @@ void initLedsWhite() {
 void initLedsGreen() {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB::Green;
+  }
+  FastLED.show();
+}
+void initLedsBlue() {
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB::Blue;
   }
   FastLED.show();
 }
@@ -78,21 +91,20 @@ void setup() {
   if (!ether.begin(sizeof Ethernet::buffer, mymac, SS)) {
     Serial.println("Failed to access Ethernet controller");
   }
-#if STATIC
-  Serial.print("setting up static ip");
-  ether.staticSetup(myip, gwip);
-#else
-  Serial.print("setting up dhcp");
-  if (!ether.dhcpSetup()) {
-    Serial.println("DHCP failed");
+
+  Serial.print("setting up DHCP");
+  if (ether.dhcpSetup()) {
+    ledWelcomeGreen();
+  } else {
+    Serial.println("DHCP failed. Using static IP");
+    Serial.print("setting up static ip");
+    ether.staticSetup(myip, gwip);
+    ledWelcomeBlue();
   }
-#endif
   ether.printIp("IP:  ", ether.myip);
   ether.printIp("GW:  ", ether.gwip);
   ether.printIp("DNS: ", ether.dnsip);
-
   ether.udpServerListenOnPort(&udpSerialPrint, 1337);
-  ledWelcome();
 }
 
 void loop() {
