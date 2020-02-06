@@ -3,12 +3,13 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "ledstripinterface/serial/cmd",
+    importpath = "ledstripinterface/service/udp/cmd",
     visibility = ["//visibility:private"],
     deps = [
-        "//demo:go_default_library",
+        "//example/engine:go_default_library",
         "//proto:go_default_library",
-        "//serial:go_default_library",
+        "//service/serial:go_default_library",
+        "//service/udp:go_default_library",
     ],
 )
 

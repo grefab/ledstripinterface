@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	"ledstripinterface/demo"
+	"ledstripinterface/example"
 	pb "ledstripinterface/proto"
 	"ledstripinterface/service"
-	"ledstripinterface/udp"
+	"ledstripinterface/service/udp"
 	"log"
 )
 
@@ -19,7 +19,7 @@ func main() {
 	if *clientMode {
 		log.Print("running in client mode")
 		display := service.NewRemoteDisplay(*endpoint)
-		demo.PlayShiftRegisterDemo(func(frame pb.Frame) error {
+		example.PlayShiftRegisterDemo(func(frame pb.Frame) error {
 			return display.ShowFrame(&frame)
 		})
 	} else {

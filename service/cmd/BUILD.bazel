@@ -6,10 +6,10 @@ go_library(
     importpath = "ledstripinterface/service/cmd",
     visibility = ["//visibility:private"],
     deps = [
-        "//demo:go_default_library",
+        "//example:go_default_library",
         "//proto:go_default_library",
         "//service:go_default_library",
-        "//udp:go_default_library",
+        "//service/udp:go_default_library",
     ],
 )
 

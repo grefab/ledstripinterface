@@ -2,8 +2,8 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "go_default_library",
-    srcs = ["shiftregister.go"],
-    importpath = "ledstripinterface/demo",
+    srcs = ["demo.go"],
+    importpath = "ledstripinterface/example/engine",
     visibility = ["//visibility:public"],
     deps = ["//proto:go_default_library"],
 )

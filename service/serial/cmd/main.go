@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	"ledstripinterface/demo"
+	"ledstripinterface/example"
 	pb "ledstripinterface/proto"
-	"ledstripinterface/serial"
+	serial2 "ledstripinterface/service/serial"
 	"log"
 )
 
@@ -14,12 +14,12 @@ func main() {
 	flag.Parse()
 
 	log.Print("sending demo data to serial port", *serialPort)
-	controller := serial.Controller{}
+	controller := serial2.Controller{}
 	err := controller.EstablishConnection(*serialPort)
 	if err != nil {
 		panic(err)
 	}
-	demo.PlayShiftRegisterDemo(func(frame pb.Frame) error {
+	example.PlayShiftRegisterDemo(func(frame pb.Frame) error {
 		controller.SendFrame(frame)
 		return nil
 	})
