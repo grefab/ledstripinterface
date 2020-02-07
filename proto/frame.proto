@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package ledstripinterface;
+
+message Frame {
+    repeated Color pixels = 1;
+}
+
+message Color {
+    uint32 r = 1;
+    uint32 g = 2;
+    uint32 b = 3;
+}
