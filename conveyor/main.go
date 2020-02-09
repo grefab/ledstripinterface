@@ -18,7 +18,7 @@ func main() {
 		Offset: 0,
 		Stride: 1,
 	}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		srRed.Vials = append(srRed.Vials, &pb.Color{
 			R: 255,
 			G: 0,
@@ -30,7 +30,7 @@ func main() {
 		Offset: 1,
 		Stride: 1,
 	}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		srGreen.Vials = append(srGreen.Vials, &pb.Color{
 			R: 0,
 			G: 255,
@@ -61,14 +61,14 @@ func main() {
 			log.Print(err)
 		}
 
-		time.Sleep(time.Millisecond * 2000)
+		time.Sleep(time.Millisecond * 1000)
 
 		err := display.ShowConveyor(&conveyor)
 		if err != nil {
 			log.Print(err)
 		}
 
-		time.Sleep(time.Millisecond * 2000)
+		time.Sleep(time.Millisecond * 1000)
 		log.Printf("duration: %v", time.Now().Sub(startTime))
 	}
 }

@@ -9,20 +9,20 @@ import (
 	pb "ledstripinterface/proto"
 	"log"
 	"net"
-	"sync"
 	"time"
 )
 
 type displayService struct {
 	frameChan    chan pb.Frame
 	lastConveyor pb.Conveyor
-	m            sync.Mutex
+	lastBloat    int
 }
 
 func RunServer(ip net.IP, port int, sendFrame func(frame pb.Frame)) {
 	d := displayService{
 		frameChan:    make(chan pb.Frame),
 		lastConveyor: pb.Conveyor{},
+		lastBloat:    1,
 	}
 	s := grpc.NewServer()
 	pb.RegisterDisplayServer(s, &d)
@@ -61,21 +61,19 @@ func (d *displayService) ShowFrame(_ context.Context, frame *pb.Frame) (*empty.E
 const vialWidth = 3
 
 func (d *displayService) ShowConveyor(ctx context.Context, conveyor *pb.Conveyor) (*empty.Empty, error) {
-	d.m.Lock()
 	d.lastConveyor = *conveyor
-	d.m.Unlock()
 	vials := lineUpVials(conveyor.ShiftRegisters)
 	ledsNeeded := calculateLengthAsLedCount(vials, conveyor.Strip)
 	rawImg := vialsToImage(vials)
-	ledImg := resize.Resize(ledsNeeded, 1, rawImg, resize.Lanczos3)
+	// we use same bloating here to render image without different down-sampling artifacts
+	bloated := resize.Resize(uint(rawImg.Bounds().Dx()*d.lastBloat), 1, rawImg, resize.NearestNeighbor)
+	ledImg := resize.Resize(ledsNeeded, 1, bloated, resize.Bilinear)
 	frame := imageToFrame(ledImg, conveyor.Strip)
 	return d.ShowFrame(ctx, &frame)
 }
 
 func (d *displayService) Move(_ context.Context, req *pb.MoveRequest) (*empty.Empty, error) {
-	d.m.Lock()
 	conveyor := d.lastConveyor
-	d.m.Unlock()
 	vials := lineUpVials(conveyor.ShiftRegisters)
 	ledsNeeded := calculateLengthAsLedCount(vials, conveyor.Strip)
 	realVialCount := len(vials)
@@ -84,19 +82,20 @@ func (d *displayService) Move(_ context.Context, req *pb.MoveRequest) (*empty.Em
 	}
 	rawImg := vialsToImage(vials)
 	bloatSize := int(req.RenderFrameCount) / (vialWidth * int(req.Steps))
+	d.lastBloat = bloatSize
 	bloated := resize.Resize(uint(rawImg.Bounds().Dx()*bloatSize), 1, rawImg, resize.NearestNeighbor)
 	bloatedRgba, ok := bloated.(*image.RGBA)
 	if !ok {
 		panic("cannot convert image")
 	}
 	windowWidth := realVialCount * vialWidth * bloatSize
-	for i := 1; i < int(req.Steps)*bloatSize*vialWidth; i++ {
+	for i := 1; i <= int(req.Steps)*bloatSize*vialWidth; i++ {
 		subImg := bloatedRgba.SubImage(image.Rect(
 			i,
 			0,
 			windowWidth+i,
 			1))
-		shrunkSubImg := resize.Resize(ledsNeeded, 1, subImg, resize.Lanczos3)
+		shrunkSubImg := resize.Resize(ledsNeeded, 1, subImg, resize.Bilinear)
 		frame := imageToFrame(shrunkSubImg, conveyor.Strip)
 		d.frameChan <- frame
 	}
