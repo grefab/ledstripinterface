@@ -4,7 +4,8 @@ load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 proto_library(
     name = "ledstripinterface_proto",
     srcs = [
-        "api.proto",
+        "conveyor.proto",
+        "displayservice.proto",
         "frame.proto",
     ],
     visibility = ["//visibility:public"],

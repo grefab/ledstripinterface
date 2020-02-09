@@ -5,12 +5,14 @@ go_library(
     srcs = [
         "client.go",
         "helper.go",
-        "server.go",
+        "render.go",
+        "service.go",
     ],
     importpath = "ledstripinterface/service",
     visibility = ["//visibility:public"],
     deps = [
         "//proto:go_default_library",
+        "@com_github_nfnt_resize//:go_default_library",
         "@io_bazel_rules_go//proto/wkt:empty_go_proto",
         "@org_golang_google_grpc//:go_default_library",
     ],

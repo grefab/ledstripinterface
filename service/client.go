@@ -29,3 +29,18 @@ func (c *remoteDisplay) ShowFrame(frame *pb.Frame) (err error) {
 	_, err = c.display.ShowFrame(ctx, frame)
 	return err
 }
+
+func (c *remoteDisplay) ShowConveyor(conveyor *pb.Conveyor) (err error) {
+	ctx, _ := context.WithTimeout(context.Background(), time.Millisecond*500)
+	_, err = c.display.ShowConveyor(ctx, conveyor)
+	return err
+}
+
+func (c *remoteDisplay) Move() (err error) {
+	ctx, _ := context.WithTimeout(context.Background(), time.Millisecond*500)
+	_, err = c.display.Move(ctx, &pb.MoveRequest{
+		Steps:            2,
+		RenderFrameCount: 30,
+	})
+	return err
+}

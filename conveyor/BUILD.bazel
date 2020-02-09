@@ -3,17 +3,16 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "ledstripinterface/shiftregister/cmd",
-    visibility = ["//visibility:private"],
+    importpath = "ledstripinterface/conveyor",
+    visibility = ["//visibility:public"],
     deps = [
         "//proto:go_default_library",
         "//service:go_default_library",
-        "//shiftregister:go_default_library",
     ],
 )
 
 go_binary(
-    name = "cmd",
+    name = "conveyor",
     embed = [":go_default_library"],
     visibility = ["//visibility:public"],
 )

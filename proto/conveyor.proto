@@ -1,14 +1,7 @@
 syntax = "proto3";
 
 package ledstripinterface;
-
-import "google/protobuf/empty.proto";
 import "proto/frame.proto";
-
-service Display {
-    rpc ShowFrame (Frame) returns (google.protobuf.Empty);
-    rpc ShowShiftRegister (ShiftRegister) returns (google.protobuf.Empty);
-}
 
 message Conveyor {
     Strip strip = 1;
@@ -16,14 +9,13 @@ message Conveyor {
 }
 
 message Strip {
-    float length_meters = 1;
-    float chain_element_size = 3;
+    float length_meters = 1; // length of the LED strip from first to last LED
+    uint32 led_count = 2; // number of LEDs installed over length
+    float chain_element_size_mm = 3;
 }
 
-// Contains vials that lie on the conveyor.
 message ShiftRegister {
     repeated Color vials = 1;
     int32 offset = 2; // relative to first LED
     int32 stride = 3; // extra distance between vials, usually equals shift register count -1
-    uint32 led_count = 4;
 }

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package ledstripinterface;
+
+import "google/protobuf/empty.proto";
+import "proto/frame.proto";
+import "proto/conveyor.proto";
+
+service Display {
+    rpc ShowFrame (Frame) returns (google.protobuf.Empty);
+    rpc ShowConveyor (Conveyor) returns (google.protobuf.Empty);
+    rpc Move (MoveRequest) returns (google.protobuf.Empty);
+}
+
+message MoveRequest {
+    int32 steps = 1;
+    int32 render_frame_count = 2; // we render with 100Hz. length of transition = 10ms * (this -1), because we don't render the first frame
+}
