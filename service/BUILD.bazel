@@ -1,19 +1,19 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
     name = "go_default_library",
-    srcs = [
-        "client.go",
-        "helper.go",
-        "render.go",
-        "service.go",
-    ],
+    srcs = ["main.go"],
     importpath = "ledstripinterface/service",
     visibility = ["//visibility:public"],
     deps = [
         "//proto:go_default_library",
-        "@com_github_nfnt_resize//:go_default_library",
-        "@io_bazel_rules_go//proto/wkt:empty_go_proto",
-        "@org_golang_google_grpc//:go_default_library",
+        "//service/lib:go_default_library",
+        "//udp:go_default_library",
     ],
+)
+
+go_binary(
+    name = "service",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
 )

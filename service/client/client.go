@@ -1,4 +1,4 @@
-package service
+package client
 
 import (
 	"context"
@@ -36,10 +36,10 @@ func (c *remoteDisplay) ShowConveyor(conveyor *pb.Conveyor) (err error) {
 	return err
 }
 
-func (c *remoteDisplay) Move() (err error) {
+func (c *remoteDisplay) Move(steps int) (err error) {
 	ctx, _ := context.WithTimeout(context.Background(), time.Millisecond*500)
 	_, err = c.display.Move(ctx, &pb.MoveRequest{
-		Steps:            2,
+		Steps:            int32(steps),
 		RenderFrameCount: 30,
 	})
 	return err

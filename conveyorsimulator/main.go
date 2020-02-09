@@ -2,7 +2,7 @@ package main
 
 import (
 	pb "ledstripinterface/proto"
-	"ledstripinterface/service"
+	"ledstripinterface/service/client"
 	"log"
 	"time"
 )
@@ -11,7 +11,7 @@ func main() {
 	log.SetFlags(log.LUTC | log.Ldate | log.Ltime | log.Lmicroseconds)
 
 	log.Print("running in client mode")
-	display := service.NewRemoteDisplay("localhost:15050")
+	display := client.NewRemoteDisplay("localhost:15050")
 
 	srRed := pb.ShiftRegister{
 		Vials:  nil,
@@ -21,8 +21,8 @@ func main() {
 	for i := 0; i < 20; i++ {
 		srRed.Vials = append(srRed.Vials, &pb.Color{
 			R: 255,
-			G: 0,
-			B: 0,
+			G: 150,
+			B: 150,
 		})
 	}
 	srGreen := pb.ShiftRegister{
@@ -32,9 +32,9 @@ func main() {
 	}
 	for i := 0; i < 20; i++ {
 		srGreen.Vials = append(srGreen.Vials, &pb.Color{
-			R: 0,
-			G: 255,
-			B: 0,
+			R: 150,
+			G: 150,
+			B: 255,
 		})
 	}
 
@@ -56,7 +56,7 @@ func main() {
 	for {
 		startTime := time.Now()
 
-		err = display.Move()
+		err = display.Move(len(conveyor.ShiftRegisters))
 		if err != nil {
 			log.Print(err)
 		}

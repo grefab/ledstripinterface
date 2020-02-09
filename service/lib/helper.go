@@ -1,6 +1,7 @@
-package service
+package lib
 
 import (
+	pb "ledstripinterface/proto"
 	"log"
 	"net"
 	"regexp"
@@ -19,4 +20,14 @@ func ParseEndpoint(endpoint string) (net.IP, int) {
 		log.Fatalf("not a valid port: %v: %v", matches[0][2], err)
 	}
 	return ip, port
+}
+
+func FrameToBytes(frame *pb.Frame) []byte {
+	data := make([]byte, 0, len(frame.Pixels)*3)
+	for _, color := range frame.Pixels {
+		data = append(data, byte(color.R))
+		data = append(data, byte(color.G))
+		data = append(data, byte(color.B))
+	}
+	return data
 }
